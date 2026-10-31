@@ -55,3 +55,9 @@ nwg-displays
 # Fonts named by the configs
 ttf-jetbrains-mono-nerd
 adwaita-fonts
+# Hyprland's notifications default to misc:font_family = "Sans", which
+# fontconfig resolves to DejaVu Sans; its icons are Nerd Font glyphs in the
+# private use area, which the symbols-only font supplies as a fallback.
+# Without these, Hyprland's own messages render without icons.
+ttf-dejavu
+ttf-nerd-fonts-symbols

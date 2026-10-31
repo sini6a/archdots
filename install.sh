@@ -106,10 +106,23 @@ install_links() {
                "$REPO"/config/rofi/scripts/*.sh
 }
 
+# GTK 4 and portal-aware apps read the theme from dconf, not from
+# gtk-4.0/settings.ini, so the .ini files alone leave them unthemed.
+install_dconf_defaults() {
+  command -v dconf >/dev/null || { warn "dconf not installed; skipping GTK defaults."; return; }
+  say "Installing system-wide GTK appearance defaults"
+  run sudo install -Dm644 "$REPO/system/dconf/00-archdots-theme" \
+        /etc/dconf/db/local.d/00-archdots-theme
+  run sudo install -Dm644 "$REPO/system/dconf/profile-user" /etc/dconf/profile/user
+  run sudo dconf update
+  printf '  ok      %s\n' "/etc/dconf/db/local (Dracula, prefer-dark)"
+}
+
 # -------------------------------------------------------------------- main
 
 [ "$do_packages" -eq 1 ] && install_packages
 [ "$do_links" -eq 1 ] && install_links
+[ "$do_links" -eq 1 ] && install_dconf_defaults
 
 say "Done."
 [ -d "$BACKUP" ] && warn "Previous files were moved to ${BACKUP/#$HOME/~}"

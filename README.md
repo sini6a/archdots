@@ -49,7 +49,7 @@ the backup never silently goes stale.
 | Kitty | Nerd Font, transparent background, Mocha and current-theme presets |
 | Dunst | Notifications |
 | Fish | Custom left and right prompt functions |
-| GTK 2/3/4, Qt 6 | Dracula theme and font preferences |
+| GTK 2/3/4, Qt 6 | Dracula theme and font preferences, plus a dconf system default |
 | nwg-displays / nwg-look | Monitor layout and GTK theme tooling |
 
 The package lists are built from what the configs actually reference, not from
@@ -57,6 +57,13 @@ what happened to be installed on the source machine. Every entry in
 [`packages/`](packages/) is called by something in `config/`, bar two pieces of
 infrastructure flagged inline (`xdg-desktop-portal-hyprland` and `gvfs`). Only
 `wttrbar` and `soteria-git` compile from source.
+
+[`system/dconf/`](system/dconf/) holds the one piece that does not live under
+`$HOME`: GTK 4 and portal-aware applications read the theme from dconf and
+ignore `gtk-4.0/settings.ini`, so without it they stay unthemed until something
+such as nwg-look writes the user's dconf by hand. `install.sh` installs it as a
+*system* database, which needs no D-Bus session and still lets nwg-look
+override per user.
 
 Configs for tools nothing launches were removed rather than shipped inert, so
 there is no Wofi, Wlogout, Swaylock, volumeicon, xsettingsd or Starship config

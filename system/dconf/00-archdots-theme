@@ -1,0 +1,14 @@
+# System-wide GTK appearance defaults for archdots.
+#
+# GTK 4 and portal-aware applications read these through dconf and ignore
+# gtk-4.0/settings.ini, so shipping only the .ini files leaves such apps
+# unthemed until something (nwg-look) writes dconf. Installed as a system db
+# rather than a user one: it needs no D-Bus session and applies to every user,
+# while leaving nwg-look free to override per user.
+[org/gnome/desktop/interface]
+gtk-theme='Dracula'
+icon-theme='Dracula'
+color-scheme='prefer-dark'
+font-name='Adwaita Sans Light 12'
+cursor-theme='default'
+cursor-size=24

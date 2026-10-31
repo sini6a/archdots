@@ -1,0 +1,4 @@
+# Installed as /etc/dconf/profile/user. Without a system-db line, dconf reads
+# only the per-user database and the defaults above are never consulted.
+user-db:user
+system-db:local
