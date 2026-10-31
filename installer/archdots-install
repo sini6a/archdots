@@ -42,17 +42,65 @@ LIVE=$(live_disk || true)
 # --------------------------------------------------------------- disk pick
 
 say "Available disks"
-lsblk -dno NAME,SIZE,MODEL,TYPE | awk '$4=="disk"{printf "       /dev/%-12s %-9s %s\n",$1,$2,$3}'
-[ -n "$LIVE" ] && info "(/dev/$LIVE is the live medium and cannot be selected)"
+# MODEL must come last: it often contains spaces, which would shift the field
+# TYPE is read from and silently empty the whole listing.
+lsblk -dno NAME,SIZE,TYPE,MODEL | awk '$3=="disk"{
+  m=""; for (i=4; i<=NF; i++) m = m $i " "
+  printf "       /dev/%-12s %-9s %s\n", $1, $2, m
+}'
+if [ -n "$LIVE" ]; then
+  info "(/dev/$LIVE is the live medium and cannot be selected)"
+fi
 
 read -rp "
 Target disk (e.g. /dev/sda, /dev/nvme0n1): " DISK
-[ -b "$DISK" ] || { bad "$DISK is not a block device"; exit 1; }
-[ -n "$LIVE" ] && [ "$DISK" = "/dev/$LIVE" ] && { bad "That is the live medium."; exit 1; }
-case "$(lsblk -dno TYPE "$DISK")" in disk) ;; *) bad "$DISK is not a whole disk"; exit 1 ;; esac
+
+# The live medium is never a valid target, dry-run or not.
+if [ -n "$LIVE" ] && [ "$DISK" = "/dev/$LIVE" ]; then
+  bad "That is the live medium."; exit 1
+fi
+
+# A dry run exists to rehearse the flow, which has to work on a machine with no
+# spare disk attached. So the device checks warn instead of aborting, and the
+# steps that would query the device are skipped.
+REAL_DISK=1
+if [ ! -b "$DISK" ]; then
+  if [ "$DRY" -eq 1 ]; then
+    REAL_DISK=0
+    bad "$DISK is not a block device -- continuing anyway because this is a dry run"
+  else
+    bad "$DISK is not a block device"; exit 1
+  fi
+elif [ "$(lsblk -dno TYPE "$DISK")" != "disk" ]; then
+  if [ "$DRY" -eq 1 ]; then
+    REAL_DISK=0
+    bad "$DISK is not a whole disk -- continuing anyway because this is a dry run"
+  else
+    bad "$DISK is not a whole disk"; exit 1
+  fi
+fi
 
 say "This will DESTROY everything on $DISK"
-lsblk -o NAME,SIZE,FSTYPE,LABEL,MOUNTPOINTS "$DISK" | sed 's/^/       /'
+if [ "$REAL_DISK" -eq 1 ]; then
+  lsblk -o NAME,SIZE,FSTYPE,LABEL,MOUNTPOINTS "$DISK" | sed 's/^/       /'
+
+  # A disk with mounted partitions is almost certainly a running system rather
+  # than an install target. The live medium is caught above, but a second Arch
+  # install on a USB stick looks exactly like a disk you meant to erase.
+  MOUNTED=$(lsblk -no MOUNTPOINTS "$DISK" | grep -vE '^\s*$' | tr '\n' ' ' || true)
+  if [ -n "$MOUNTED" ]; then
+    bad "Partitions of $DISK are mounted at: $MOUNTED"
+    if [ "$DRY" -eq 1 ]; then
+      info "A real run would refuse this disk."
+    else
+      info "Refusing: this looks like a system that is in use."
+      info "Unmount them first if you really mean to erase this disk."
+      exit 1
+    fi
+  fi
+else
+  info "(no such device, so nothing to show)"
+fi
 read -rp "
 Type the disk path again to confirm: " CONFIRM
 [ "$CONFIRM" = "$DISK" ] || { bad "Mismatch; nothing was changed."; exit 1; }
