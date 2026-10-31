@@ -78,6 +78,21 @@ This was captured from a desktop with a 3440x1440@144 DP-1 primary and a
 - **Login.** No display manager is enabled; Hyprland is started with
   `start-hyprland` from a TTY.
 
+## Dangling references
+
+These configs call programs that are not installed and are deliberately left
+out of the package lists, because they are not installed on the source machine
+either. Each is inert until you install the program yourself.
+
+| Referenced by | Needs | Effect while missing |
+| --- | --- | --- |
+| `waybar/config.jsonc` `cava` module | `cava` | Audio visualiser is absent from the bar |
+| `waybar` disk click action | `qdirstat` | Click does nothing |
+| `waybar` audio click action | `pwvucontrol` | Click does nothing |
+| `rofi/launchers/greenclip*` | `greenclip` | Launcher exits with no entries |
+| `rofi/launchers/qemu-vm/` | `qemu-desktop`, `edk2-ovmf` | VM launcher cannot start a guest |
+| `swaylock/config` | a wallpaper not in this repo | Swaylock falls back to a solid colour |
+
 ## Versions
 
 Captured against Hyprland 0.56.2, Waybar 0.15.0, Arch Linux (kernel 7.1.9).

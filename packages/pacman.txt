@@ -70,9 +70,17 @@ volumeicon
 cliphist
 wl-clipboard
 
-# Waybar module dependencies
+# Waybar module and launcher script dependencies
 jq
 pacman-contrib
+libnotify
+libpulse
+ffmpeg
+playerctl
+nmap
+
+# Browser opened by the Waybar and Rofi click actions
+chromium
 
 # Polkit agents
 polkit-gnome
