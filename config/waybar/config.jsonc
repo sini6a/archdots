@@ -1,0 +1,328 @@
+[
+    {
+        // MAIN BAR //
+        "layer": "top",
+        "position": "top",
+        "name": "main",
+        "height": 32,
+        "reload_style_on_change": true,
+        // Set this to a specific output name (e.g. "eDP-1", see `hyprctl monitors`)
+        // to pin the bar to one screen instead of showing it on every monitor.
+        // "output": "eDP-1",
+
+        "margin-top": 10,
+        "margin-left": 16,
+        "margin-right": 16,
+
+        // --- LAYOUT: which modules appear where ------------------------------
+        // "custom/spacerN" entries are purely decorative chevron dividers, see
+        // their definitions further down. The same spacer module id is reused
+        // wherever that color transition repeats, since its config is static.
+        "modules-left": [
+            "group/traym",
+            "hyprland/workspaces",
+            "hyprland/submap",
+            "hyprland/window",
+        ],
+
+        "modules-right": [
+            "custom/spacer1",
+            "cpu",
+            "temperature",
+            "memory#ram",
+            "disk",
+            "network#info",
+            "custom/spacer2",
+            "pulseaudio#input",
+            "pulseaudio#output",
+            "cava",
+            "custom/headsetbattery",
+            "custom/spacer1",
+            "hyprland/language",
+            "backlight",
+            "custom/battery",
+            "custom/spacer2",
+            "clock",
+            "custom/weather",
+        ],
+
+        // --- MODULE DEFINITIONS ------------------------------------------------
+        // Modules
+        "disk": {
+            "interval": 16,
+            "format": " {percentage_used}%",
+            "tooltip": "{}",
+            "tooltip-format": "Free {free}",
+            "on-click": "qdirstat & ffplay -nodisp -autoexit ~/.config/waybar/sounds/interact.mp3",
+            "states": {
+                "warning": 85,
+                "critical": 95,
+            },
+        },
+
+        "cava": {
+            // "cava_config": "~/.config/picom.conf",
+            "framerate": 30,
+            "autosens": 0,
+            "sensitivity": 30,
+            "bars": 16,
+            "lower_cutoff_freq": 20,
+            "higher_cutoff_freq": 20000,
+            "hide_on_silence": true,
+            // "format_silent": "quiet",
+            "method": "pipewire",
+            "source": "auto",
+            "stereo": false,
+            "reverse": false,
+            "bar_delimiter": 0,
+            "monstercat": false,
+            "waves": false,
+            "noise_reduction": 0.2,
+            "input_delay": 2,
+            "sleep_timer": 5,
+            // "format-icons": ["▁","▁","▁","▁","▁","▁","▁","▁","▁","▁","▁","▁","▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" ],
+            "format-icons": ["⡀", "⡀", "⡄", "⡆", "⡇"],
+        },
+
+        "custom/headsetbattery": {
+            "interval": 8,
+            "return-type": "json",
+            "tooltip": true,
+            "tooltip-format": "{alt}",
+            "format": "{text}",
+            "exec": "~/.config/waybar/modules/headsetbattery.sh",
+        },
+
+        "custom/weather": {
+            "format": "{}°",
+            "tooltip": true,
+            "interval": 60,
+            "exec": "wttrbar --nerd --hide-conditions --location Gothenburg",
+            "return-type": "json",
+        },
+
+        "group/traym": {
+            "orientation": "horizontal",
+            "drawer": {},
+            "modules": ["custom/trayicon", "tray"],
+        },
+
+        "backlight": {
+            "device": "intel_backlight",
+            "format": "{icon} {percent}%",
+            "format-icons": ["󱩎", "󱩑", "󱩓", "󱩕", "󰛨"],
+            "scroll-step": 1,
+	    "min-brightness": 10.0,
+            "on-scroll-up": "brightnessctl set 1%-",
+            "on-scroll-down": "brightnessctl set +1%",
+        },
+
+        "custom/battery": {
+            "interval": 8,
+            "return-type": "json",
+            "exec": "~/.config/waybar/modules/bat-pp.sh refresh",
+            "exec-on-event": true,
+            "format": "{text}%",
+            "on-click": "~/.config/waybar/modules/bat-pp.sh toggle & ffplay -nodisp -autoexit ~/.config/waybar/sounds/interact.mp3",
+            "tooltip": "true",
+            "tooltip-format": "{alt}",
+        },
+
+        "clock": {
+            "interval": 1,
+            "format": " {:%H:%M:%S    %a %d.%m}",
+            "tooltip-format": "{calendar}",
+            "calendar": {
+                "weeks-pos": "right",
+                "mode": "month",
+                "format": {
+                    "months": "<span color='#cba6f7'><b>{}</b></span>",
+                    "days": "<span color='#cdd6f4'><b>{}</b></span>",
+                    "weeks": "<span color='#94e2d5'> W{}</span>",
+                    "weekdays": "<span color='#f9e2af'><b>{}</b></span>",
+                    "today": "<span color='#f5e0dc'><b><u>{}</u></b></span>",
+                },
+            },
+            "on-click": "chromium --app=https://calendar.google.com & ffplay -nodisp -autoexit ~/.config/waybar/sounds/interact.mp3",
+        },
+
+        "cpu": {
+            "interval": 4,
+            "min-length": 6,
+            "format": " {usage}%",
+            "states": {
+                "warning": 80,
+                "critical": 95,
+            },
+        },
+
+        "hyprland/language": {
+            "format": " {short}",
+            "min-length": 5,
+            "on-click": "hyprctl switchxkblayout current next & ffplay -nodisp -autoexit ~/.config/waybar/sounds/interact.mp3",
+            "tooltip": false,
+            "class": "language",
+        },
+
+        "memory#ram": {
+            "interval": 4,
+            "format": " {percentage}%",
+            "states": {
+                "warning": 80,
+                "critical": 95,
+            },
+            "tooltip": "{}",
+            "tooltip-format": "{used}/{total} GiB",
+        },
+
+        "network#info": {
+            "interval": 2,
+            "format": "󱘖  Offline",
+            "format-wifi": "{icon} {bandwidthDownBits}",
+            "format-ethernet": "󰈀 {bandwidthDownBits}",
+            "min-length": 11,
+            "tooltip": "{}",
+            "tooltip-format-wifi": "{ifname}\n{essid}\n{signalStrength}% \n{frequency} GHz\n󰇚 {bandwidthDownBits}\n󰕒 {bandwidthUpBits}",
+            "tooltip-format-ethernet": "{ifname}\n󰇚 {bandwidthDownBits} \n󰕒 {bandwidthUpBits}",
+            "on-click": "kitty -e nmtui & ffplay -nodisp -autoexit ~/.config/waybar/sounds/interact.mp3",
+            "format-icons": ["󰤫", "󰤟", "󰤢", "󰤥", "󰤨"],
+            "states": {
+                "normal": 25,
+            },
+        },
+
+        "hyprland/submap": {
+            "always-on": true,
+            "default-submap": "",
+            "format": "{}",
+            "format-RESIZE": "{}lol",
+            "tooltip": false,
+        },
+
+        "hyprland/window": {
+            "format": "",
+            "max-length": 48,
+            "tooltip": false,
+            "icon": true,
+            "icon-size": 18,
+            "tooltip": true,
+        },
+
+        "hyprland/workspaces": {
+            "disable-scroll-wraparound": true,
+            "smooth-scrolling-threshold": 4,
+            "enable-bar-scroll": true,
+            "format": "{icon}",
+            "show-special": true,
+            "special-visible-only": false,
+            "format-icons": {
+                "magic": "",
+                "zellij": "",
+                "10": "󰊴",
+                "lock": "",
+            },
+        },
+
+        "pulseaudio#output": {
+            "format": "{icon} {volume}%",
+            "format-bluetooth": "{icon} {volume}%",
+            "format-source-muted": "{volume}",
+            "format-icons": {
+                "headphone": "",
+                "hands-free": "",
+                "headset": "",
+                "phone": "",
+                "portable": "",
+                "car": "",
+                "default": ["", ""],
+            },
+            "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+            "on-click-right": "pwvucontrol & ffplay -nodisp -autoexit ~/.config/waybar/sounds/interact.mp3",
+            "on-scroll-down": "sh -c 'vol=$(pactl get-sink-volume @DEFAULT_SINK@ | grep -oP \"\\d+(?=%)\" | head -1); if [ \"$vol\" -lt 100 ]; then pactl set-sink-volume @DEFAULT_SINK@ +1%; else pactl set-sink-volume @DEFAULT_SINK@ 110%; fi'",
+            "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ -1%",
+            "tooltip": true,
+            "scroll-step": 1,
+        },
+
+        "pulseaudio#input": {
+            "format": " {format_source}%",
+            "format-source": "{volume}",
+            "format-source-muted": "{volume}",
+            "on-scroll-down": "sh -c 'vol=$(pactl get-source-volume @DEFAULT_SOURCE@ | grep -oP \"\\d+(?=%)\" | head -1); if [ \"$vol\" -lt 100 ]; then pactl set-source-volume @DEFAULT_SOURCE@ +2%; else pactl set-source-volume @DEFAULT_SOURCE@ 110%; fi'",
+            "on-scroll-up": "pactl set-source-volume @DEFAULT_SOURCE@ -2%",
+            "max-volume": "100",
+            "on-click": "pactl set-source-mute @DEFAULT_SOURCE@ toggle",
+            "on-click-right": "pwvucontrol & ffplay -nodisp -autoexit ~/.config/waybar/sounds/interact.mp3",
+            "tooltip-format": "{source_desc}",
+            "scroll-step": 4,
+        },
+
+        "temperature": {
+            "critical-threshold": 90,
+            "interval": 4,
+            "format": "{icon} {temperatureC}°",
+            "format-icons": ["", "", "", "", ""],
+            "tooltip": false,
+        },
+
+        "tray": {
+            "icon-size": 18,
+            "spacing": 8,
+        },
+
+        // Decorative chevron dividers between module groups. Only 2 exist:
+        // spacer1 = background2->background1 transition, spacer2 = the
+        // reverse. Each is reused everywhere that transition occurs in
+        // modules-right above (see style.css for the actual colors).
+        "custom/spacer1": {
+            "format": "",
+            "tooltip": false,
+        },
+
+        "custom/spacer2": {
+            "format": "",
+            "tooltip": false,
+        },
+
+        "custom/trayicon": {
+            // "format": " ",
+            // "format": "Zäni",
+            "format": "󰣇 ",
+            // "format": " ",
+            // "format": "ᗧ ",
+            "tooltip": false,
+            "on-click": " bash ~/.config/waybar/modules/pacman.sh",
+            "on-scroll-up": "",
+            "on-scroll-down": "",
+        },
+    },
+
+    {
+        // INDICATOR BAR //
+        "layer": "top",
+        "position": "top",
+        "name": "indicator",
+        "passthrough": true,
+        "reload_style_on_change": true,
+        // "output": "eDP-1",
+
+        "height": 32,
+
+        // Must match the main bar's margin-left/margin-right exactly (see
+        // above) so this window spans the same horizontal extent as the main
+        // bar - gen-indicator-width.sh's width calculation assumes that.
+        "margin-top": -32,
+        "margin-left": 16,
+        "margin-right": 16,
+
+        "modules-right": ["custom/batteryindicator"],
+
+        "custom/batteryindicator": {
+            "interval": 4,
+            "return-type": "json",
+            "tooltip": false,
+            "format": " ",
+            "exec": "~/.config/waybar/modules/bat-pp.sh bar",
+        },
+    },
+]

@@ -1,0 +1,87 @@
+# Official repo packages for the graphical stack.
+# Installed by install.sh via: pacman -S --needed
+
+# Hyprland compositor and its ecosystem
+hyprland
+hypridle
+hyprlock
+hyprpaper
+hyprpolkitagent
+hyprsunset
+hyprlauncher
+xdg-desktop-portal-hyprland
+
+# Bar, launcher, notifications, logout
+waybar
+rofi
+wofi
+dunst
+swayidle
+swaybg
+
+# Screenshots and annotation
+grim
+slurp
+swappy
+
+# Terminal and shell
+kitty
+fish
+starship
+fzf
+
+# File manager
+thunar
+thunar-archive-plugin
+thunar-volman
+xarchiver
+gvfs
+gvfs-mtp
+
+# Display, theming and settings tools
+nwg-displays
+nwg-look
+qt6ct
+xfce4-settings
+xdg-user-dirs
+adapta-gtk-theme
+
+# Audio
+pipewire-alsa
+pipewire-jack
+pipewire-pulse
+wireplumber
+pamixer
+alsa-utils
+
+# Hardware, power, network
+brightnessctl
+power-profiles-daemon
+headsetcontrol
+networkmanager
+network-manager-applet
+blueman
+bluez
+bluez-utils
+cbatticon
+volumeicon
+
+# Clipboard
+cliphist
+wl-clipboard
+
+# Waybar module dependencies
+jq
+pacman-contrib
+
+# Polkit agents
+polkit-gnome
+pantheon-polkit-agent
+
+# Fonts
+ttf-dejavu
+ttf-fira-code
+ttf-jetbrains-mono-nerd
+ttf-liberation-mono-nerd
+otf-font-awesome
+woff2-font-awesome

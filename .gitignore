@@ -1,0 +1,17 @@
+# Fish rewrites this at runtime with universal variable state.
+config/fish/fish_variables
+
+# Tool-generated shell completions.
+config/fish/completions/
+
+# Thunar sidebar entries; may contain local network addresses.
+config/gtk-3.0/bookmarks
+
+# nwg-look writes this; customisations belong in ~/.gtkrc-2.0.mine.
+home/.gtkrc-2.0.mine
+
+# Editor and agent scratch state.
+.claude/
+*.bak
+*.before-*
+*.swp

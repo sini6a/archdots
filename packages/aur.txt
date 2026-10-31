@@ -1,0 +1,24 @@
+# AUR packages for the graphical stack.
+# Installed by install.sh via: yay -S --needed
+
+# Dracula theme used by GTK 2/3/4 and Qt
+dracula-gtk-theme
+dracula-icons-git
+
+# Logout menu
+wlogout
+
+# Lock screen with blur/vignette effects (alternative to hyprlock)
+swaylock-effects
+
+# Waybar weather module backend
+wttrbar
+
+# Night-light / colour temperature control
+wl-gammarelay
+
+# Polkit authentication agent used by the Hyprland autostart
+soteria-git
+
+# Font Awesome 4 glyphs still referenced by some Waybar/Rofi icons
+ttf-font-awesome-4

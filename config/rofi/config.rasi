@@ -1,0 +1,31 @@
+@theme "~/.config/rofi/themes/dracula.rasi"
+/** Basic config file **/
+
+configuration {
+    modi:                       "drun,window,ssh,nmap:~/.config/rofi/scripts/rofi-nmap.sh";
+    show-icons:                 true;
+
+    /* Icons for entries that do not supply their own. */
+    ssh {
+        fallback-icon: "utilities-terminal";
+    }
+    nmap {
+        fallback-icon: "network-workgroup";
+    }
+
+    /* keep mode cycling on Tab */
+    kb-mode-next: "Tab";
+    kb-mode-previous: "ISO_Left_Tab,Shift+Tab";
+
+    /* remove the conflicting Tab bindings */
+    kb-element-next: "";
+    kb-element-prev: "";
+    kb-row-tab: "";
+
+    window-format:              "{w}{c} · {t}";
+    
+	font:                       "JetBrainsMono Nerd Font 12";
+    show-icons:                 true;
+    disable-history:            false;
+    sidebar-mode:               false;
+}
