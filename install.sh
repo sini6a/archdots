@@ -118,9 +118,10 @@ cat <<'EOF'
 
 Next steps:
   * Enable the services you want:
-      systemctl enable --now NetworkManager bluetooth power-profiles-daemon
-  * Set your monitor layout with `nwg-displays`, then paste its monitor lines
-    into config/hypr/hyprland.conf (the monitor= line near the top).
+      systemctl enable --now NetworkManager power-profiles-daemon
+  * The Hyprland config adapts to whatever display is attached. For a fixed
+    multi-monitor layout, run `nwg-displays` and copy its values into the
+    hl.monitor({...}) call near the top of config/hypr/hyprland.lua.
   * Start Hyprland with `start-hyprland` from a TTY, or enable a display
     manager of your choice.
 EOF

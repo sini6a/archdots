@@ -46,13 +46,21 @@ the backup never silently goes stale.
 | Hyprpaper / Hyprlock / Hypridle | Wallpaper, lock screen, idle and suspend timers |
 | Waybar | Workspaces and window title on the left; CPU, temperature, memory, disk, network, audio, headset battery, language, backlight, battery, clock and weather on the right |
 | Rofi | App launcher, power menu, nmap scanner, Wi-Fi picker, clipboard history, QEMU VM launcher, Dracula theme |
-| Wofi / Wlogout | Alternative launcher and the logout/shutdown menu |
 | Kitty | Nerd Font, transparent background, Mocha and current-theme presets |
 | Dunst | Notifications |
-| Fish | Prompt functions and Starship config |
-| GTK 2/3/4, Qt 6, xsettingsd | Dracula theme and font preferences |
+| Fish | Custom left and right prompt functions |
+| GTK 2/3/4, Qt 6 | Dracula theme and font preferences |
 | nwg-displays / nwg-look | Monitor layout and GTK theme tooling |
-| Swaylock, volumeicon, hyfetch | Lock screen alternative, tray volume, fetch colours |
+
+The package lists are built from what the configs actually reference, not from
+what happened to be installed on the source machine. Every entry in
+[`packages/`](packages/) is called by something in `config/`, bar two pieces of
+infrastructure flagged inline (`xdg-desktop-portal-hyprland` and `gvfs`). Only
+`wttrbar` and `soteria-git` compile from source.
+
+Configs for tools nothing launches were removed rather than shipped inert, so
+there is no Wofi, Wlogout, Swaylock, volumeicon, xsettingsd or Starship config
+here even though the source machine had them.
 
 Deliberately excluded: SSH keys and hosts, GPG, browser profiles, shell
 history, clipboard history, nmap results, and application state for Chromium,
@@ -74,8 +82,6 @@ hardware:
   a pixel width computed for the display above — currently 1404px, sized for
   the laptop panel's 1440px logical width. Regenerate it with
   `config/waybar/modules/gen-indicator-width.sh` after changing monitors.
-- **Swaylock.** `config/swaylock/config` points at a wallpaper path that is not
-  in this repo. Hyprlock is what the keybindings actually use; fix or ignore.
 - **Legacy `.conf`.** [`docs/hyprland.conf.legacy`](docs/hyprland.conf.legacy)
   is the pre-Lua config, kept only for reference. Hyprland 0.57 cannot read it
   (see Versions), and it must not be placed in `~/.config/hypr/`.
@@ -84,17 +90,23 @@ hardware:
 
 ## Dangling references
 
-These configs call programs that are not installed and are deliberately left
-out of the package lists, because they are not installed on the source machine
-either. Each is inert until you install the program yourself.
+Some configs call programs the package lists deliberately leave out, to keep
+the install lean. Each is inert until you install the program yourself, and the
+rest of the desktop is unaffected.
 
 | Referenced by | Needs | Effect while missing |
 | --- | --- | --- |
+| `hyprland.lua` `$nmap` keybinding | `nmap` | The Rofi network scanner opens but finds nothing |
+| `waybar` interaction sound | `ffmpeg` | Bar clicks are silent |
+| `waybar` weather and tray click actions | `chromium` | Clicks do nothing |
 | `waybar/config.jsonc` `cava` module | `cava` | Audio visualiser is absent from the bar |
 | `waybar` disk click action | `qdirstat` | Click does nothing |
 | `waybar` audio click action | `pwvucontrol` | Click does nothing |
 | `rofi/launchers/greenclip*` | `greenclip` | Launcher exits with no entries |
 | `rofi/launchers/qemu-vm/` | `qemu-desktop`, `edk2-ovmf` | VM launcher cannot start a guest |
+
+To restore any of them, add the package to `packages/pacman.txt` and re-run
+`./install.sh --packages-only`.
 | `swaylock/config` | a wallpaper not in this repo | Swaylock falls back to a solid colour |
 
 ## Versions

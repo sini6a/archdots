@@ -1,95 +1,55 @@
 # Official repo packages for the graphical stack.
 # Installed by install.sh via: pacman -S --needed
+#
+# Every entry here is referenced by something in config/, with two exceptions
+# noted inline. If you add a config that calls a new program, add it here too.
 
-# Hyprland compositor and its ecosystem
+# Hyprland and its ecosystem
 hyprland
 hypridle
 hyprlock
 hyprpaper
-hyprpolkitagent
-hyprsunset
-hyprlauncher
+# Not referenced by config, but GUI file pickers and screen sharing need it:
 xdg-desktop-portal-hyprland
 
-# Bar, launcher, notifications, logout
+# Bar, launcher, notifications
 waybar
 rofi
-wofi
 dunst
-swayidle
-swaybg
 
-# Screenshots and annotation
-grim
-slurp
-swappy
-
-# Terminal and shell
+# Terminal, file manager, shell
 kitty
-fish
-starship
-fzf
-
-# File manager
 thunar
-thunar-archive-plugin
-thunar-volman
-xarchiver
+# Not referenced by config, but Thunar needs it for trash and mounting:
 gvfs
-gvfs-mtp
+fish
 
-# Display, theming and settings tools
-nwg-displays
-nwg-look
-qt6ct
-xfce4-settings
-xdg-user-dirs
-adapta-gtk-theme
-
-# Audio
-pipewire-alsa
-pipewire-jack
-pipewire-pulse
+# Audio: wpctl from the Hyprland binds, pactl from the Waybar modules
 wireplumber
-pamixer
-alsa-utils
+pipewire-pulse
+libpulse
 
-# Hardware, power, network
+# Hardware and network
 brightnessctl
-power-profiles-daemon
 headsetcontrol
+power-profiles-daemon
 networkmanager
-network-manager-applet
-blueman
-bluez
-bluez-utils
-cbatticon
-volumeicon
 
 # Clipboard
 cliphist
 wl-clipboard
 
-# Waybar module and launcher script dependencies
+# Waybar module and Rofi launcher script dependencies
 jq
-pacman-contrib
 libnotify
-libpulse
-ffmpeg
+pacman-contrib
 playerctl
-nmap
 
-# Browser opened by the Waybar and Rofi click actions
-chromium
+# Theming tools
+qt6ct
+nwg-look
+nwg-displays
 
-# Polkit agents
-polkit-gnome
-pantheon-polkit-agent
-
-# Fonts
-ttf-dejavu
-ttf-fira-code
+# Fonts named by the configs
 ttf-jetbrains-mono-nerd
-ttf-liberation-mono-nerd
-otf-font-awesome
-woff2-font-awesome
+adwaita-fonts

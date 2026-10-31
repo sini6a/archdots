@@ -1,24 +1,15 @@
 # AUR packages for the graphical stack.
 # Installed by install.sh via: yay -S --needed
+#
+# Only wttrbar and soteria-git compile from source; the Dracula packages are
+# plain file copies.
 
-# Dracula theme used by GTK 2/3/4 and Qt
+# The GTK/icon theme named in gtk-3.0, gtk-4.0 and qt6ct settings
 dracula-gtk-theme
 dracula-icons-git
 
-# Logout menu
-wlogout
-
-# Lock screen with blur/vignette effects (alternative to hyprlock)
-swaylock-effects
-
-# Waybar weather module backend
-wttrbar
-
-# Night-light / colour temperature control
-wl-gammarelay
-
-# Polkit authentication agent used by the Hyprland autostart
+# Polkit authentication agent launched by the Hyprland autostart
 soteria-git
 
-# Font Awesome 4 glyphs still referenced by some Waybar/Rofi icons
-ttf-font-awesome-4
+# Backend for the Waybar weather module
+wttrbar
