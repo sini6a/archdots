@@ -96,7 +96,6 @@ rest of the desktop is unaffected.
 
 | Referenced by | Needs | Effect while missing |
 | --- | --- | --- |
-| `hyprland.lua` `$nmap` keybinding | `nmap` | The Rofi network scanner opens but finds nothing |
 | `waybar` interaction sound | `ffmpeg` | Bar clicks are silent |
 | `waybar` weather and tray click actions | `chromium` | Clicks do nothing |
 | `waybar/config.jsonc` `cava` module | `cava` | Audio visualiser is absent from the bar |

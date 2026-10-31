@@ -44,6 +44,8 @@ jq
 libnotify
 pacman-contrib
 playerctl
+# Backs the $nmap keybinding's network scanner:
+nmap
 
 # Theming tools
 qt6ct
