@@ -1,0 +1,93 @@
+name: Build ISO
+
+# Tag a commit to publish a release; run manually to get a throwaway build.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Also publish a GitHub release'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  iso:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # A default runner has roughly 14 GB free, and mkarchiso needs about 10 GB
+      # of scratch plus the finished ISO. These toolchains are not used here.
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
+                      /usr/local/share/boost /usr/local/lib/node_modules
+          df -h /
+
+      # The work happens in an explicit privileged Arch container rather than a
+      # job-level `container:`, so actions/checkout runs on the host with its
+      # own Node and only the build needs elevated privileges.
+      - name: Build the ISO
+        run: |
+          mkdir -p "$PWD/out"
+          docker run --rm --privileged \
+            -v "$PWD":/repo -v "$PWD/out":/out \
+            -e ARCHDOTS_WORK=/work \
+            -e AUR_METHOD=makepkg \
+            archlinux:base-devel bash -euo pipefail -c '
+              pacman -Sy --noconfirm --needed archlinux-keyring
+              pacman -Syu --noconfirm --needed archiso git dconf
+              cd /repo
+              ./iso/build-iso.sh aurrepo
+              ./iso/build-iso.sh profile
+              ./iso/build-iso.sh build
+              cp /work/out/*.iso /out/
+            '
+
+      - name: Checksum
+        id: sum
+        run: |
+          cd out
+          iso=$(ls *.iso)
+          sha256sum "$iso" > "$iso.sha256"
+          echo "name=$iso" >> "$GITHUB_OUTPUT"
+          ls -lh
+          cat "$iso.sha256"
+
+      - name: Upload as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.sum.outputs.name }}
+          path: out/*
+          retention-days: 7
+          compression-level: 0
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          extra=()
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            tag="${GITHUB_REF_NAME}"
+          else
+            # A manual run has no tag. Let gh create one at this commit rather
+            # than pushing a tag by hand, and mark it a prerelease.
+            tag="manual-$(date +%Y%m%d-%H%M)"
+            extra=(--target "${GITHUB_SHA}" --prerelease)
+          fi
+          gh release create "$tag" out/* "${extra[@]}" \
+            --title "archdots $tag" \
+            --generate-notes \
+            --notes "Live ISO with the archdots Hyprland desktop.
+
+          Boot it, then \`sudo archdots-install\` to install to a disk
+          (\`--dry-run\` first to see every step).
+
+          Live session: user \`live\`, password \`live\`."

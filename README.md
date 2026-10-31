@@ -177,3 +177,39 @@ about to destroy, and asks for the disk path twice before touching anything.
 
 The AUR packages are installed from prebuilt files carried on the medium, since
 `pacstrap` cannot fetch from the AUR.
+
+## Releases
+
+[`.github/workflows/build-iso.yml`](.github/workflows/build-iso.yml) builds the
+ISO on GitHub and attaches it to a release:
+
+```sh
+git tag v1.0.0 && git push origin v1.0.0
+```
+
+That produces `archdots-<date>-x86_64.iso` plus a `.sha256`, as release assets.
+Running the workflow manually from the Actions tab instead gives a 7-day
+artifact, or a dated prerelease if you tick the release box.
+
+The build runs in a privileged `archlinux:base-devel` container on an Ubuntu
+runner, so `actions/checkout` uses the host's Node and only `mkarchiso` needs
+privileges. The AUR packages are compiled in CI with `AUR_METHOD=makepkg`,
+which builds them as an unprivileged user in the container rather than relying
+on the local nspawn rootfs that [`iso/build-iso.sh`](iso/build-iso.sh) prefers
+when building by hand.
+
+The runner's preinstalled .NET, Android and GHC toolchains are deleted first:
+`mkarchiso` needs roughly 10 GB of scratch space and a default runner has about
+14 GB free.
+
+### Building the same ISO locally
+
+```sh
+sudo iso/build-iso.sh all   # aurrepo + profile + build
+     iso/build-iso.sh run   # boot it in QEMU
+```
+
+`VM_DISK=20G iso/build-iso.sh run` attaches a blank disk so `archdots-install`
+has a target, and `VM_BOOT=disk` then boots what was installed onto it.
+`VM_GL=off` drops virgl so the guest falls back to llvmpipe, which is what
+kitty and hyprlock need in a VM.
