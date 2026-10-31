@@ -156,3 +156,24 @@ Read the whole output, not just the verdict. Two traps:
   loaded and `config ok` refers to a generated default.
 - Passing an explicit `-c` always selects the Lua parser, so pointing it at a
   `.conf` reports spurious syntax errors. Run it with no arguments.
+
+## Installing from the live ISO
+
+The live medium carries `archdots-install`, which installs to a disk:
+
+```sh
+sudo archdots-install --dry-run   # print every step, change nothing
+sudo archdots-install             # do it
+```
+
+It creates a GPT disk with a 512M ESP and a single ext4 root, pacstraps the
+package set in [`packages/`](packages/) plus the kernel, firmware and the right
+microcode, installs systemd-boot, creates your user, and then runs this repo's
+own `install.sh` to link the configs. The result has `~/archdots` as a git
+checkout symlinked into `~/.config`, so later edits show up as drift here.
+
+It refuses to target the disk the live medium booted from, lists what it is
+about to destroy, and asks for the disk path twice before touching anything.
+
+The AUR packages are installed from prebuilt files carried on the medium, since
+`pacstrap` cannot fetch from the AUR.
