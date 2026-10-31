@@ -65,16 +65,18 @@ This was captured from a desktop with a 3440x1440@144 DP-1 primary and a
 
 - **Monitors.** `config/hypr/hyprland.conf` has an inline `monitor =` line near
   the top. Run `nwg-displays` to get the right values and edit that line.
-  `config/hypr/monitors.conf` and `monitors.lua` are nwg-displays output kept
-  for reference — note that `hyprland.conf` does **not** source them.
+  `config/hypr/monitors.conf` and `docs/monitors.lua` are nwg-displays output
+  kept for reference — note that `hyprland.conf` does **not** source them.
 - **Waybar battery outline.** `config/waybar/modules/indicator-width.css` holds
   a pixel width computed for the monitor above. Regenerate it with
   `config/waybar/modules/gen-indicator-width.sh` after changing monitors.
 - **Swaylock.** `config/swaylock/config` points at a wallpaper path that is not
   in this repo. Hyprlock is what the keybindings actually use; fix or ignore.
-- **Hyprland Lua config.** `config/hypr/hyprland.lua` is a complete port of the
-  `.conf` to Hyprland's Lua API, kept as an alternative. The `.conf` is the live
-  one and the two have drifted — treat the `.conf` as authoritative.
+- **Hyprland Lua config.** [`docs/hyprland.lua`](docs/hyprland.lua) is a port of
+  the `.conf` to Hyprland's Lua API, kept as a reference. It lives outside
+  `config/` on purpose: Hyprland prefers `~/.config/hypr/hyprland.lua` over
+  `hyprland.conf` when both exist, so shipping it there would silently override
+  the authoritative `.conf`. The two have drifted — `.conf` is the live one.
 - **Login.** No display manager is enabled; Hyprland is started with
   `start-hyprland` from a TTY.
 
@@ -95,5 +97,17 @@ either. Each is inert until you install the program yourself.
 
 ## Versions
 
-Captured against Hyprland 0.56.2, Waybar 0.15.0, Arch Linux (kernel 7.1.9).
-Hyprland moves fast and occasionally breaks config syntax between releases.
+Validated against Hyprland 0.57.0, Waybar 0.15.0, Arch Linux (kernel 7.1.9).
+`config/hypr/hyprland.conf` passes `Hyprland --verify-config` on 0.57.0.
+
+Hyprland moves fast and does break config syntax between releases — 0.57.0
+lowered the maximum of `decoration.shadow.render_power` from 10 to 4, for
+instance. After upgrading it, re-run:
+
+```sh
+Hyprland --verify-config
+```
+
+Note that `--verify-config` with an explicit `-c` always uses the Lua parser,
+so pointing it at a `.conf` reports spurious syntax errors. Run it with no
+arguments to check the config the way Hyprland actually loads it.
