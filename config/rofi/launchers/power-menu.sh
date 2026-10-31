@@ -19,7 +19,7 @@ choice="$(
 
 case "$choice" in
   Lock)		sleep 0.25 && hyprlock ;;
-  Logout)   hyprctl dispatch exit 0 ;;
+  Logout)   hyprctl dispatch 'hl.dsp.exit()' ;;
   Suspend)  loginctl lock-session && systemctl suspend ;;
   Reboot)   exec systemctl reboot ;;
   Shutdown) exec systemctl poweroff ;;

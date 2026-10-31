@@ -120,7 +120,22 @@ agent and the clipboard watchers all starting from it.
 default and uses that. A legacy `.conf` is therefore silently ignored rather
 than reported as an error, which makes the breakage easy to miss.
 
-0.57 also lowered the maximum of `decoration.shadow.render_power` from 10 to 4.
+0.57 also lowered the maximum of `decoration.shadow.render_power` from 10 to 4,
+and changed `hyprctl dispatch` to take a Lua expression instead of a dispatcher
+name and arguments:
+
+```sh
+hyprctl dispatch exit 0               # 0.56 and earlier
+hyprctl dispatch 'hl.dsp.exit()'      # 0.57
+hyprctl dispatch 'hl.dsp.dpms("off")' # 0.57
+```
+
+Scripts and `hypridle.conf` are affected, not just `hyprland.lua`, and the old
+form fails silently — the Logout entry in the Rofi power menu simply did
+nothing. `hyprctl eval` runs a Lua string if you need to check a call, and
+`hl.dsp` holds the dispatchers (`dpms` is `hl.dsp.dpms`, not `hl.dpms`).
+`hyprctl switchxkblayout` is unaffected; it is a top-level command, not a
+dispatch.
 
 After upgrading Hyprland, check the config:
 
